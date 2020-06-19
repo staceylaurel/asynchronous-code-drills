@@ -52,12 +52,12 @@ countDown(5, isDone);
 
 ////Promises Promises ;)
 //1. Create a new global variable called lunchTime with a value of true
-var lunchTime = true;
+var lunchTime = false;
 //2. Create a new function called orderMeSomeFood that returns a new Promise
 let orderMeSomeFood = new Promise(function (resolve, reject) {
     //3. In the resolver function of the Promise, write logic to check if the lunchTime variable is true   
     //4. If lunchTime is true, create an object with two properties and values (key/value pairs) of your choice: lunch: "your favorite lunch" drink: "your favorite beverage"
-    if (lunchTime === false) {
+    if (lunchTime === true) {
         let lunch = { food: "Kimchi Jjigae", drink: "Cheerwine" };
         resolve(lunch)
     //6. If lunchTime is false, create a variable and set it equal to a new Error that has your own message
