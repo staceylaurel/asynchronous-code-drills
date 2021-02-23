@@ -1,0 +1,346 @@
+Terminology
+A promise can be:
+
+fulfilled - The action relating to the promise succeeded
+rejected - The action relating to the promise failed
+pending - Hasn't fulfilled or rejected yet
+settled - Has fulfilled or rejected
+thenable - refers to any object with a .then function that follows a pattern similar to the Promise .then function
+
+
+then(onFulfilled, onRejected) - Allows the addition of fulfillment and rejection handlers (callbacks) to the promise, then returns a new promise which resolves to the return value of the called handler (whether it be onFulfilled in the case the Promise is fulfilled or onRejected in the case the Promise is rejected, or to its original settled value if the promise was not handled (i.e. if the relevant handler onFulfilled or onRejected is not a function).
+catch(onRejected) - Allows the addition of a rejection handler callback to the promise, and returns a new promise resolving to the return value of the callback if it is called, or to its original fulfillment value if the promise is instead fulfilled.
+finally(onFinally) - Appends a handler (callback) to the promise, and returns a new promise which is resolved when the original promise is resolved. The handler is called when the promise is settled, whether fulfilled or rejected. This is not supported in IE or Edge browsers.
+
+Promise.all(iterable) - Returns a promise that either fulfills when all of the promises in the iterable argument have fulfilled or rejects as soon as one of the promises in the iterable argument rejects. If the returned promise fulfills, it is fulfilled with an array of the values from the fulfilled promises in the same order as defined in the iterable. If the returned promise rejects, it is rejected with the reason from the first promise in the iterable that rejected. This method can be useful for aggregating results of multiple promises meaning that the iterable is generally an array of promise objects.
+Promise.race(iterable) - Returns a promise that fulfills or rejects as soon as one of the promises in the iterable fulfills or rejects, with the value or reason from that promise. If the iterable is an array of promises, the first one to fullfill or reject will be the corresponding resulting value.
+Promise.reject(reason) - Returns a Promise object that is rejected with the given reason. This is generally used in an error scenario to ensure a Promise is always returned from a function.
+Promise.resolve(value) - Returns a Promise object that is resolved with the given value. If the value is a thenable (i.e. has a .then method), the returned promise will "follow" that thenable, adopting its eventual state; otherwise the returned promise will be fulfilled with the value. Generally, if you don't know if a value is a promise or not, Promise.resolve(value) it instead and work with the return value as a promise.
+
+
+setTimeout(() =>{
+
+},2000);
+
+
+<!-- callback function -->
+
+let btn = document.createElement('button');
+btn.addEventListener('click', function (){
+
+})
+
+<!-- The constructor takes in a single argument called the executor function as seen below. -->
+
+let promise = new Promise(function (resolve, reject) {
+    // do something asynchronous which eventually calls either:
+    //   resolve(someValue); // fulfilled
+    // or
+    //   reject("failure reason"); // rejected
+});
+
+<!-- ///Promise Lecture 
+chaining -->
+let somePromise = getWordOfTheDay();
+somePromise
+.then((word) => {
+    console.log(`The word of the day is ${word}.`);
+    console.log(`sending to friend`);
+//chaining
+return tellFriend(word);
+}) .then((response) => {
+    console.log(`friend responded:`);
+    console.log(response);
+}).catch((err) => {
+    console.log(err);
+})
+
+<!-- button and promises -->
+function slowEcho =(message,delay) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(message); //executer
+        }, 2000);
+    });
+}
+
+document.getElementsById('btn')
+.addEventListener('click',() => {
+    slowEcho('Hello World!, 1000')
+    .then((a) => {
+        console.log(a);
+    }).catch((e) => {
+        console.log('e');
+    });
+});
+
+<!-- Reject copy paste edit -->
+function slowEcho =(message,delay) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            let random = Math.florr(Math.random( * 10);)
+            if (random % 2 ===0) {
+            resolve(message); //executer
+            }else{
+                let err= new Error('Something odd happened.')
+                reject(err);
+            }
+        }, delay);
+    });
+}
+
+document.getElementsById('btn')
+.addEventListener('click',() => {
+    slowEcho('Hello World!, 1000')
+    .then((a) => {
+        console.log(a);
+    }).catch((e) => {
+        console.log('An error occured!');
+        console.log('e');
+    });
+});
+
+
+<!-- //Static Promise
+copy and paste above code
+Promise.all -->
+
+function slowEcho =(message,delay) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            //let random = Math.florr(Math.random( * 10);)
+            let random = 2;
+            if (random % 2 ===0) {
+            resolve(message); //executer
+            }else{
+                let err= new Error('Something odd happened.')
+                reject(err);
+            }
+        }, delay);
+    });
+}
+
+document.getElementsById('btn')
+.addEventListener('click',() => {
+    slowEcho('Hello World!, 1000')
+    .then((a) => {
+        console.log(a);
+    }).catch((e) => {
+        console.log('An error occured!');
+        console.log('e');
+    });
+});
+
+let p = Promise.resolve(Hello);
+let q = Promise.reject(new Error( 'Uh oh!'));
+
+p.then((message) => {
+    console.log(message);
+}).catch((err) => {
+    console.log(err);
+});    
+
+q.then((message) => {
+    console.log(message);
+}).catch((err) => {
+    console.log(err);
+});
+
+<!-- Promise.all -->
+document.getElementById('btn')
+.addEventLitener('click',() => {
+    Promise.all([
+        slowEcho('I waited 1 second', 1000),
+        slowEcho('I waited 2 second', 2000),
+        slowEcho('I waited 3 second', 3000),
+    ]).then(([result1, result2, result3]) => {  //value is an an array of these results
+        //let result1 = value[0];
+        //let result2 = value[1];
+        //let result3 = value[2];
+    }).catch ((err) => {
+        console.log(err);
+    });
+    
+});
+
+
+
+<!-- ///Async/Await
+copy paste first code -->
+
+function slowEcho =(message,delay) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            //let random = Math.floor(Math.random( * 10);)
+            let random = 2;
+            if (random % 2 ===0) {
+            resolve(message); //executer
+            }else{
+                let err= new Error('Something odd happened.')
+                reject(err);
+            }
+        }, delay);
+    });
+}
+document.getElementById('bt')
+.addEventListener('click', async( => {
+    let someMessage = await slowEcho('I waited 1 second!', 2000);
+    let someMessage = await slowEcho('I waited 2 second!', 2000);
+    let someMessage = await slowEcho('I waited 3 second!', 2000);
+})
+
+<!-- Promise.all version of Async -->
+document.getElementById('bt')
+.addEventListener('click', async( => {
+let [res1, res2, res3] = await Promis.all([
+    slowEcho('I am am first', 1000),
+    slowEcho('I am am second', 2000),
+    slowEcho('I am am third', 3000),
+]);
+}
+
+<!-- or Await -->
+document.getElementById('bt')
+.addEventListener('click', async( => { 
+    try{
+        let message = await slowEcho('Hello World!', 1000);
+    } catch (e){
+        console.log(e)
+    }    
+    });
+
+    
+
+<!-- ///Reference Callbacks
+A synchronous callback describes a function taken in as an argument that is called immediately in the function. -->
+
+function greet(name) {
+    alert('Hello ' + name);
+}
+
+function greetUser(callback) {
+    let userName = prompt('Please enter your name.');
+    callback(userName);
+}
+
+greetUser(greet);
+
+
+<!--An asynchronous callback describes a function taken in as an argument that is called later in time generally after another asynchronous operation is performed (e.g. - an API request). -->
+
+let options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0
+};
+
+function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+function getPosition(successCallback, geoOptions) {
+    navigator.geolocation.getCurrentPosition(successCallback, error, geoOptions);
+    console.log('Retrieving position');
+}
+
+function success(pos) {
+    let crd = pos.coords;
+
+    console.log('Your current position is:');
+    console.log(`Latitude : ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+    console.log(`More or less ${crd.accuracy} meters.`);
+}
+
+getPosition(success, options);
+
+<!-- In the example above, the call to getCurrentPosition will allow code to continue executing before the successCallback is fired. So Retrieving position will be logged to the console, and then when the current position is retrieved, the successCallback will fire. -->
+
+
+<!-- You can pass in anonymous functions as callbacks if there's no need to use that function elsewhere. In the example above, using the getPosition function you could pass in an anonymous function like the following: -->
+
+getPosition(function (pos) {
+    let crd = pos.coords; <!-- // do something with crd.latitude and crd.longitude -->
+}, options);
+<!-- You've likely already seen callbacks being used extensively in DOM related functions, so you should already be fairly familiar :) -->
+
+$('button').click(function () {
+    console.log('A button has been clicked!');
+});
+<!-- In the example above, the anonymous function passed into the JQuery click function is a callback that is fired whenever a button on the page is clicked! -->
+
+
+<!-- imagine we defined a set of functions asyncThing1, asyncThing2, asyncThing3, asyncThing4
+ and a set of error handling functions asyncRecovery1, asyncRecovery2 -->
+asyncThing1().then((value) => {
+    // do something with value
+    return asyncThing2(value);
+}).then((nextValue) => {
+    // do something with nextValue
+    return asyncThing3();
+}).catch((err) => {
+    // something in either asyncThing1, asyncThing2, or asyncThing3 failed
+    return asyncRecovery1(err);
+}).then(() => {
+    // asyncThing1, asyncThing2, or asyncThing3 all succeeded
+    // or asyncRecovery1 successfully handled the error
+    return asyncThing4();
+}, (err) => {
+    // would only be fired if asyncRecovery1 failed
+    return asyncRecovery2();
+}).catch((err) => {
+    // would only be fired if asyncThing4 or asyncRecovery2 failed
+    console.log("Don't worry about it");
+}).then(() => {
+    // will always be fired since the only way this wouldn't be called
+    // is if something in the above catch function errored,
+    // but we know the console.log should not error
+    console.log('All done!');
+});
+Side Note
+
+The following
+
+asyncThing1().catch((err) => {
+    // handle error
+});
+is equivalent to
+
+asyncThing1().then(null, (err) => {
+    // handle error
+});
+ 
+
+<!-- AJAX example
+Promises are very commonly seen with asynchronous API and web requests. An example can be seen below. -->
+
+// show a loading spinner
+let spinner = document.querySelector('.spinner');
+
+spinner.style.display = 'block';
+
+// retrieve a JSON mapping file of our story
+$.getJSON('story.json').then((story) => {
+    // retrieve the content of the first chapter
+    return $.getJSON(story.chapterUrls[0]);
+}).then((chapter1) => {
+    // a function to add html we retrieved to the DOM
+    addHtmlToPage(chapter1.html);
+}).catch(() => {
+    // a function to add the error to the page
+    addTextToPage('Failed to show chapter');
+}).then(() => {
+    // hide the loading spinner
+    spinner.style.display = 'none';
+});
+
+<!-- Promise.reject(reason) -->
+function getPosition(options) {
+    if (!options) {
+        return Promise.reject(new Error('Options Needed'));
+    }
+
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+}
